@@ -35,7 +35,7 @@ public class GPU
         byte r = videoMemory[offset];
         byte g = videoMemory[offset + 1];
         byte b = videoMemory[offset + 2];
-        return Color.FromArgb(255, r, g, b); // Fully alpha
+        return Color.FromArgb(255, r, g, b);
     }
 
     public void ClearScreen()

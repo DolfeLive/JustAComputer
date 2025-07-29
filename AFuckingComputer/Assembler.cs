@@ -5,7 +5,7 @@ public static class Assembler
 {
     private static readonly Dictionary<string, byte> OpcodeMap = new Dictionary<string, byte>
     {
-        // Basic CPU Instructions
+        // CPU Instructions
         {"NOP", 0x00}, {"LOAD", 0x01}, {"STORE", 0x02}, {"ADD", 0x03}, {"SUB", 0x04},
         {"JMP", 0x05}, {"JZ", 0x06}, {"JNZ", 0x07}, {"CMP", 0x08}, {"CMP_VAL", 0x09}, {"HLT", 0x0F},
         

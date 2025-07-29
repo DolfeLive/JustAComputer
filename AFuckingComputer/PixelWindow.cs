@@ -30,7 +30,6 @@ public class PixelWindow : Form
 
         displayCanvas = new Bitmap(clientWidth, clientHeight);
 
-        // Enable double buffering and custom paint
         this.SetStyle(ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.UserPaint |
                      ControlStyles.DoubleBuffer, true);

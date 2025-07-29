@@ -1,5 +1,4 @@
-﻿
-using Computer;
+﻿using Computer;
 
 namespace Computer;
 
@@ -9,8 +8,8 @@ public class CPU
     private readonly GPU _gpu;
     private readonly Input _input;
     private readonly byte[] _log;
-    private byte _acc = 0; // Accumulator
-    private ushort _pc = 0; // Program Counter (16-bit for more memory)
+    private byte _acc = 0; // accumulator
+    private ushort _pc = 0; // program counter (16-bit)
     private byte _logRegister = 0;
     private bool _running = true;
 
@@ -21,7 +20,6 @@ public class CPU
         _input = input;
     }
 
-    // Reorganized and grouped opcodes for better organization
     enum Opcode : byte
     {
         // Basic CPU Instructions (0x00-0x0F)
@@ -35,7 +33,12 @@ public class CPU
         JNZ = 0x07,         // Jump if ACC != 0
         CMP = 0x08,         // Compare ACC with RAM[addr]
         CMP_VAL = 0x09,     // Compare ACC with immediate value
-        HLT = 0x0F,         // Halt (moved to end of basic instructions)
+        GT = 0x0A,          // ACC = (ACC > RAM[addr]) ? 1 : 0
+        GT_VAL = 0x0B,      // ACC = (ACC > value) ? 1 : 0
+        LT = 0x0C,          // ACC = (ACC < RAM[addr]) ? 1 : 0
+        LT_VAL = 0x0D,      // ACC = (ACC < value) ? 1 : 0
+        NOT = 0x0E,         // ACC = (ACC == 0) ? 1 : 0
+        HLT = 0x0F,         // Halt
 
         // GPU Instructions (0x10-0x1F)
         SET_X = 0x10,           // Set GPU X register
@@ -65,14 +68,14 @@ public class CPU
 
     public void Run()
     {
-        Console.WriteLine("Computer starting...");
+        Console.WriteLine("\nComputer starting...");
 
         while (_running)
         {
             if (_pc >= _ram.ram.Length - 1) break;
 
-            byte opcode = _ram[_pc++];   // Fetch opcode
-            byte operand = _ram[_pc++];  // Fetch operand
+            byte opcode = _ram[_pc++];   // fetch opcode
+            byte operand = _ram[_pc++];  // fetch operand
 
             switch ((Opcode)opcode)
             {
@@ -125,6 +128,31 @@ public class CPU
                 case Opcode.CMP_VAL:
                     print($"Ran CMP_VAL: ACC = {_acc}, Value = {operand}, Result = {(byte)(_acc != operand ? 1 : 0)}");
                     _acc = (byte)(_acc != operand ? 1 : 0);
+                    break;
+
+                case Opcode.GT:
+                    print($"Ran GT: ACC = {_acc}, RAM[{operand}] = {_ram[operand]}, Result = {(byte)(_acc > _ram[operand] ? 1 : 0)}");
+                    _acc = (byte)(_acc > _ram[operand] ? 1 : 0);
+                    break;
+
+                case Opcode.GT_VAL:
+                    print($"Ran GT_VAL: ACC = {_acc}, Value = {operand}, Result = {(byte)(_acc > operand ? 1 : 0)}");
+                    _acc = (byte)(_acc > operand ? 1 : 0);
+                    break;
+
+                case Opcode.LT:
+                    print($"Ran LT: ACC = {_acc}, RAM[{operand}] = {_ram[operand]}, Result = {(byte)(_acc < _ram[operand] ? 1 : 0)}");
+                    _acc = (byte)(_acc < _ram[operand] ? 1 : 0);
+                    break;
+
+                case Opcode.LT_VAL:
+                    print($"Ran LT_VAL: ACC = {_acc}, Value = {operand}, Result = {(byte)(_acc < operand ? 1 : 0)}");
+                    _acc = (byte)(_acc < operand ? 1 : 0);
+                    break;
+
+                case Opcode.NOT:
+                    print($"Ran NOT: ACC = {_acc}, Result = {(byte)(_acc == 0 ? 1 : 0)}");
+                    _acc = (byte)(_acc == 0 ? 1 : 0);
                     break;
 
                 case Opcode.HLT:
@@ -243,7 +271,6 @@ public class CPU
         Console.WriteLine($"GPU registers: X={_gpu.X_REG}, Y={_gpu.Y_REG}, R={_gpu.R_REG}, G={_gpu.G_REG}, B={_gpu.B_REG}");
         Console.WriteLine($"Log register: {_logRegister}");
     }
-
 
     private void PrintLogRegister()
     {

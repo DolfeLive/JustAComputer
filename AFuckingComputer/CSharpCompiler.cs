@@ -285,11 +285,11 @@ public class CSharpCompiler
             string left = subMatch.Groups[1].Value.Trim();
             string right = subMatch.Groups[2].Value.Trim();
 
-            CompileExpression(left);            // Load left operand into ACC
-            EmitInstruction(Opcode.STORE, 254); // Store left in temp1
-            CompileExpression(right);           // Load right operand into ACC  
-            EmitInstruction(Opcode.STORE, 255); // Store right in temp2
-            EmitInstruction(Opcode.LOAD, 254);  // Load left back into ACC
+            CompileExpression(left);            // load left operand into ACC
+            EmitInstruction(Opcode.STORE, 254); // store left in temp1
+            CompileExpression(right);           // load right operand into ACC  
+            EmitInstruction(Opcode.STORE, 255); // store right in temp2
+            EmitInstruction(Opcode.LOAD, 254);  // load left back into ACC
             EmitInstruction(Opcode.SUB, 255);   // ACC = left - right
             return;
         }
@@ -429,7 +429,7 @@ public class CSharpCompiler
                 EmitInstruction(Opcode.CMP, _variables[right]);
             }
             // CMP returns 1 if different, 0 if same
-            // For ==, we want 1 if same (true), 0 if different (false)
+            // For ==, I want 1 if same (true), 0 if different (false)
             // So we use NOT to flip: 0->1, 1->0
             EmitInstruction(Opcode.NOT, 0);
             return;
@@ -496,7 +496,7 @@ public class CSharpCompiler
             string left = geMatch.Groups[1].Value.Trim();
             string right = geMatch.Groups[2].Value.Trim();
 
-            // A >= B is equivalent to !(A < B)
+            // A >= B is == to !(A < B)
             CompileExpression(left);
             if (byte.TryParse(right, out byte value))
             {

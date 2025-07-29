@@ -16,7 +16,7 @@ public class PixelWindow : Form
     {
         this.gpu = gpu;
         this.input = input;
-        this.Text = "Display, bitch";
+        this.Text = "Display, ####";
 
         int clientWidth = SCREEN_WIDTH * PIXEL_SIZE;
         int clientHeight = SCREEN_HEIGHT * PIXEL_SIZE;

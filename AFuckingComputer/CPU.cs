@@ -1,4 +1,5 @@
 ﻿using Computer;
+using System.Numerics;
 
 namespace Computer;
 
@@ -69,7 +70,7 @@ public class CPU
     public void Run()
     {
         Console.WriteLine("\nComputer starting...");
-
+        uint runs = 0;
         while (_running)
         {
             if (_pc >= _ram.ram.Length - 1) break;
@@ -212,8 +213,8 @@ public class CPU
                     break;
 
                 case Opcode.DRAW_PIXEL:
-                    print("Ran DRAW_PIXEL");
-                    _gpu.DrawPixel();
+                    (int, int, Vector3) ret = _gpu.DrawPixel();
+                    print($"Ran DRAW_PIXEL, Pos X: {ret.Item1}, Pos Y: {ret.Item2}, Color: {ret.Item3}");
                     break;
 
                 case Opcode.CLEAR_SCREEN:
@@ -264,7 +265,11 @@ public class CPU
                     break;
             }
 
-            Thread.Sleep(16);
+            if (runs % 4 == 0)
+            {
+                Thread.Sleep(1);
+            }
+            runs++;
         }
 
         Console.WriteLine($"Execution complete. ACC = {_acc}");

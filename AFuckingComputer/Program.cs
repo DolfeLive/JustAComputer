@@ -29,25 +29,73 @@ public static class Program
 static void Main()
 {
     
-    byte x = 64;
-    while (x > 0)
+    byte x = 10;
+    byte y = 10;
+    byte dx = 1;
+    byte dy = 1;
+
+    byte px = x;
+    byte py = y;
+
+    while (true)
     {
-        x = x - 1;
-        SetPixel(x, x, 255, 0, 0);
+        SetPixel(px, py, 0, 0, 0);
+
+        px = x;
+        py = y;
+
+        x = x + dx;
+        y = y + dy;
+
+        if (x == 0)
+        {
+            dx = 0 - dx;
+        }
+        if (x == 63)
+        {
+            dx = 0 - dx;
+        }
+        
+        if (y == 0)
+        {
+            dy = 0 - dy;
+        }
+        if (y == 63)
+        {
+            dy = 0 - dy;
+        }
+        SetPixel(x, y, 255, 0, 0);
     }
     
-}
-        ";
+}";
+
+        string drawLine = @"
+static void Main()
+{
+    
+    byte x = 64;
+    while (x < 255)
+    {
+        while (x > 0)
+        {
+            x = x - 1;
+            SetPixel(x, x, 255, 0, 0);
+        }
+        while (x < 64)
+        {
+            x = x + 1;
+            SetPixel(x, x, 0, 255, 0);
+            
+        }
+    }
+}";
 
         try
         {
-            byte[] bytecode = compiler.Compile(csharpCode);
+            byte[] bytecode = compiler.Compile(drawLine);
 
             Console.WriteLine("Compiled bytecode:");
             Console.WriteLine(compiler.DisassembleBytecode(bytecode));
-
-            Console.WriteLine("\nCompiled Program:");
-            Console.WriteLine(string.Join(", ", compiler.GetProgramBytecode()));
 
             var constants = compiler.GetConstants();
             foreach (var kvp in constants)
@@ -60,7 +108,7 @@ static void Main()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Compilation error: {ex.Message}");
+            Console.WriteLine($"Comp error: {ex.Message}");
         }
 
 

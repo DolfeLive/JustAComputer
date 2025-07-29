@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace Computer;
 public class GPU
 {
@@ -15,7 +17,7 @@ public class GPU
     private byte[] videoMemory = new byte[XWidth * YWidth * 3];
     public bool VideoMemoryDirty { get; set; } = false;
 
-    public void DrawPixel()
+    public (int , int, Vector3) DrawPixel()
     {
         if (X_REG < XWidth && Y_REG < YWidth)
         {
@@ -24,7 +26,9 @@ public class GPU
             videoMemory[offset + 1] = G_REG; // Green  
             videoMemory[offset + 2] = B_REG; // Blue
             VideoMemoryDirty = true;
+            return (X_REG, Y_REG, new(R_REG, B_REG, G_REG));
         }
+        return (0, 0, Vector3.Zero);
     }
 
     public Color GetPixelColor(int x, int y)
